@@ -13,7 +13,7 @@ def auto_seed_if_empty():
     db = SessionLocal()
     try:
         if db.query(Brand).count() == 0:
-            from seed_data import seed
+            from seed_data_large import seed
             seed()
     finally:
         db.close()
