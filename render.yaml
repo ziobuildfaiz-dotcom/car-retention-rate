@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: car-retention-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: CORS_ORIGINS
+        value: https://frontend-two-kappa-32.vercel.app
+    autoDeploy: true
