@@ -1,32 +1,18 @@
-from contextlib import asynccontextmanager
+import os
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
-from app.database import Base, SessionLocal, engine
-from app.models import Brand
+from app.database import Base, engine
 from app.routers import brands, comparison, models, retention
 
-
-def auto_seed_if_empty():
-    db = SessionLocal()
-    try:
-        if db.query(Brand).count() == 0:
-            from seed_data_large import seed
-            seed()
-    finally:
-        db.close()
+app = FastAPI(title="汽车保值率可视化平台", version="0.1.0")
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
+@app.on_event("startup")
+def on_startup():
     Base.metadata.create_all(bind=engine)
-    auto_seed_if_empty()
-    yield
-
-
-app = FastAPI(title="汽车保值率可视化平台", version="0.1.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
