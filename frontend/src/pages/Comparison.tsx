@@ -1,4 +1,4 @@
-import { Card, Select, Button, Space, Typography, Empty, Spin } from "antd";
+import { Card, Select, Button, Space, Typography, Empty, Spin, Tag } from "antd";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import ReactECharts from "echarts-for-react";
@@ -122,19 +122,22 @@ export default function Comparison() {
 
       {isLoading ? (
         <div style={{ textAlign: "center", padding: 80 }}><Spin size="large" /></div>
-      ) : comparison?.radar_data?.models?.length >= 2 ? (
+      ) : comparison && comparison.radar_data?.models?.length >= 2 ? (
+        (() => {
+          const comp = comparison;
+          return (
         <>
           <Card style={{ marginBottom: 16 }}>
             <BrandRadarChart
-              data={comparison.radar_data.models}
-              dimensions={comparison.radar_data.dimensions}
+              data={comp.radar_data.models}
+              dimensions={comp.radar_data.dimensions}
               title="多维度对比雷达图"
             />
           </Card>
 
           <Card title="车型信息对比">
-            <div style={{ display: "grid", gridTemplateColumns: `repeat(${comparison.models.length}, 1fr)`, gap: 16 }}>
-              {comparison.models.map((m: any) => (
+            <div style={{ display: "grid", gridTemplateColumns: `repeat(${comp.models.length}, 1fr)`, gap: 16 }}>
+              {comp.models.map((m: any) => (
                 <Card
                   key={m.id}
                   size="small"
@@ -155,6 +158,8 @@ export default function Comparison() {
             </div>
           </Card>
         </>
+          );
+        })()
       ) : modelIds.length >= 2 ? (
         <Empty description="无法获取对比数据" />
       ) : null}
